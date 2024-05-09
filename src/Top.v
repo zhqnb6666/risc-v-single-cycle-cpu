@@ -1,17 +1,18 @@
 module top (
-  input clock,
+  input clk,
   input reset,
   input [7:0] imm_input,
-  input [3:0] test_number,
-  input continue_button,
-  output reg [7:0] led, // LED output
-  output reg [6:0] segment_output, // Segment output for the 4 segmemt on the left
-  output reg [7:0] digit_select_output, // Digit select output for the 4 digits
-  output [31:0] wb_data
+  input [2:0] test_number,
+  input confirm_button,
+  output [7:0] led_output, // LED output
+  output [6:0] segment_outputl, // Segment output for the 4 segmemt on the left
+  output [6:0] segment_outputr, // Segment output for the 4 segmemt on the right
+  output [7:0] digit_select_output // Digit select output for the 4 digits
 );
 
   
-  
+//23mhz clock
+wire clock;  
 
 // Fetch Wires //
 	wire [15:0]target_PC;
@@ -42,6 +43,7 @@ module top (
 	wire [31:0] write_data;
 	wire [4:0] read_sel1;
 	wire [4:0] write_sel;
+  wire [31:0] a0_data;
 	
 	//OUTPUTS
 	wire [31:0] read_data1;
@@ -64,6 +66,11 @@ module top (
 
 // Writeback wires //
 	wire mem_to_reg;
+
+//Segment Display Wires
+wire [6:0] segment_output;
+assign segment_outputl = segment_output;
+assign segment_outputr = segment_output;
 	
 //Muxes
 	assign write_data = (mem_to_reg)? d_read_data:ALU_result;
@@ -76,18 +83,24 @@ module top (
 	assign operand_B = (operation2_sel) ? imm32:read_data2;
 							 
 
-	assign wb_data = write_data;
 	
 	
 //JALR passthrough
 
 	assign JALR_target = imm32 + read_data1;
 	
-
+cpu_clk cpu_clk_inst (
+  .clk_in1(clk),
+  .clk_out1(clock)
+);
 
 IFetch fetch_inst (
   .clock(clock),
   .reset(reset),
+  .pc_change(pc_change),
+  .ecall(ecall),
+  .continue_button(confirm_button),
+  .test_number(test_number),
   .target_PC(target_PC),
   .PC(PC)
 );
@@ -133,7 +146,7 @@ RegisterFile regFile_inst (
   .clk(clock),
   .reset(reset),
   .ecall(ecall),
-  .io_input(imm_input),
+  .io_input({24'h0, imm_input}),
   .io_out(io_out_en),
   .a0_data(a0_data),
   .reg_write(reg_write),
@@ -141,8 +154,10 @@ RegisterFile regFile_inst (
   .rs1(read_sel1),
   .rs2(read_sel2),
   .rd(write_sel),
+  .led_out(led_output),
   .read_data1(read_data1), 
-  .read_data2(read_data2) 
+  .read_data2(read_data2),
+  .pc_change(pc_change)
 );
 
 
@@ -174,7 +189,7 @@ SegmentDisplay seg_inst (
   .clk(clock),
   .rst(reset),
   .io_out_en(io_out_en),
-  .value(wb_data),
+  .value(a0_data),
   .seg_out(segment_output),
   .digit_select(digit_select_output)
 );

@@ -6,7 +6,7 @@ module SegmentDisplay (
     output reg [6:0] seg_out,
     output reg [7:0] digit_select
 );
-  reg [6:0] seg[7:0];
+  wire [6:0] seg[7:0];
   DigitToSegment digit0 (
       value[3:0],
       seg[0]
@@ -45,8 +45,6 @@ module SegmentDisplay (
     if (rst) begin
       counter <= 0;
       counter_select <= 0;
-      seg_out <= 7'b0000000;
-      digit_select <= 8'b00000000;
     end else if (counter == 10_000) begin
       counter <= 0;
       counter_select <= counter_select + 1;
