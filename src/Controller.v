@@ -26,6 +26,7 @@ module Controller  (
 
   // Outputs to Memory
   output reg mem_write,
+  output load_type,
 
   // Outputs to Writeback
   output reg mem_to_reg,
@@ -63,6 +64,9 @@ assign funct3 = instruction[14:12];
 
 /* Write register */
 assign write_sel = instruction[11:7];
+
+/* Load type */
+assign load_type = instruction[14:12];
 
 
 imm_generator imm_gen(

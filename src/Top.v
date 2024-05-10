@@ -4,11 +4,15 @@ module top (
   input [7:0] imm_input,
   input [2:0] test_number,
   input confirm_button,
+  output [7:0] imm_input_led,
   output [7:0] led_output, // LED output
   output [6:0] segment_outputl, // Segment output for the 4 segmemt on the left
   output [6:0] segment_outputr, // Segment output for the 4 segmemt on the right
   output [7:0] digit_select_output // Digit select output for the 4 digits
 );
+//led[0] light when ecall a0 = 10
+//led[1] light when need choose test case
+//led[7] light when need input
 
   
 //23mhz clock
@@ -62,6 +66,7 @@ wire clock;
 
 	// Data Port
 	wire mem_write;
+  wire load_type;
 	wire [31:0]d_read_data;
 
 // Writeback wires //
@@ -81,10 +86,11 @@ assign segment_outputr = segment_output;
 							 (0);
 							 
 	assign operand_B = (operation2_sel) ? imm32:read_data2;
-							 
 
-	
-	
+
+//IMM_input to LED
+assign imm_input_led = imm_input;
+							
 //JALR passthrough
 
 	assign JALR_target = imm32 + read_data1;
@@ -134,6 +140,7 @@ Controller control_unit (
 
   // Outputs to Memory
   .mem_write(mem_write),
+  .load_type(load_type),
 
   // Outputs to Writeback
   .mem_to_reg(mem_to_reg),
@@ -181,6 +188,7 @@ DMem Dmem_inst (
   .clk(clock),
   .mem_write(mem_write),
   .addr(ALU_result),
+  .load_type(load_type),
   .din(read_data2),
   .dout(d_read_data)
 );

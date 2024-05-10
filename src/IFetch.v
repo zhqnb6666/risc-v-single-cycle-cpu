@@ -14,14 +14,14 @@ module IFetch (
   reg continue_button_prev;
 
   initial begin
-    test_case[0] = 16'h0001;
-    test_case[1] = 16'h0002;
-    test_case[2] = 16'h0003;
-    test_case[3] = 16'h0004;
-    test_case[4] = 16'h0005;
-    test_case[5] = 16'h0006;
-    test_case[6] = 16'h0007;
-    test_case[7] = 16'h0008;
+    test_case[0] = 16'd0;
+    test_case[1] = 16'd10;
+    test_case[2] = 16'd20;
+    test_case[3] = 16'd30;
+    test_case[4] = 16'd40;
+    test_case[5] = 16'd50;
+    test_case[6] = 16'd60;
+    test_case[7] = 16'd70;
   end
 
   assign PC = PC_reg;
