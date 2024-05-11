@@ -1,13 +1,12 @@
 module top (
   input clk,
   input reset,
-  input [7:0] imm_input,
+  input [15:0] imm_input,
   input [2:0] test_number,
   input confirm_button,
-  output [7:0] imm_input_led,
+  output [15:0] imm_input_led,
   output [7:0] led_output, // LED output
-  output [6:0] segment_outputl, // Segment output for the 4 segmemt on the left
-  output [6:0] segment_outputr, // Segment output for the 4 segmemt on the right
+  output [6:0] segment_output,
   output [7:0] digit_select_output // Digit select output for the 4 digits
 );
 //led[0] light when ecall a0 = 10
@@ -52,7 +51,6 @@ wire clock;
 	//OUTPUTS
 	wire [31:0] read_data1;
 	wire [31:0] read_data2;
-  wire pc_change;
 
 // ALU Wires //
 	//wire branch_op;
@@ -73,9 +71,10 @@ wire clock;
 	wire mem_to_reg;
 
 //Segment Display Wires
-wire [6:0] segment_output;
-assign segment_outputl = segment_output;
-assign segment_outputr = segment_output;
+wire [6:0] segment_output_wire;
+wire [7:0] digit_select_wire;
+assign segment_output = ~segment_output_wire;
+assign digit_select_output = ~digit_select_wire;
 	
 //Muxes
 	assign write_data = (mem_to_reg)? d_read_data:ALU_result;
@@ -103,10 +102,8 @@ cpu_clk cpu_clk_inst (
 IFetch fetch_inst (
   .clock(clock),
   .reset(reset),
-  .pc_change(pc_change),
   .ecall(ecall),
   .continue_button(confirm_button),
-  .test_number(test_number),
   .target_PC(target_PC),
   .PC(PC)
 );
@@ -153,18 +150,18 @@ RegisterFile regFile_inst (
   .clk(clock),
   .reset(reset),
   .ecall(ecall),
-  .io_input({24'h0, imm_input}),
+  .io_input({16'h0, imm_input}),
   .io_out(io_out_en),
   .a0_data(a0_data),
   .reg_write(reg_write),
   .write_data(write_data), 
+  .test_case({29'h0, test_number}),
   .rs1(read_sel1),
   .rs2(read_sel2),
   .rd(write_sel),
   .led_out(led_output),
   .read_data1(read_data1), 
-  .read_data2(read_data2),
-  .pc_change(pc_change)
+  .read_data2(read_data2)
 );
 
 
@@ -198,8 +195,8 @@ SegmentDisplay seg_inst (
   .rst(reset),
   .io_out_en(io_out_en),
   .value(a0_data),
-  .seg_out(segment_output),
-  .digit_select(digit_select_output)
+  .seg_out(segment_output_wire),
+  .digit_select(digit_select_wire)
 );
 
 endmodule

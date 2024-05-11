@@ -8,12 +8,12 @@ module RegisterFile (
     input      [ 4:0] rd,          // Destination register
     input      [31:0] write_data,  // Data to write
     input             reg_write,   // Control signal to enable writing
+    input      [ 31:0] test_case,
     output reg [31:0] a0_data,     // Data read from register a0
     output reg        io_out,      //enable io_output
     output     [31:0] read_data1,  // Data read from rs1
     output     [31:0] read_data2,  // Data read from rs2
-    output reg [ 7:0] led_out,
-    output reg        pc_change
+    output reg [ 7:0] led_out
 );
 
   reg [31:0] registers[31:0];  // 32 registers each of 32 bits
@@ -36,7 +36,6 @@ module RegisterFile (
         registers[i] <= 32'd0;
       end
       led_out <= 8'b00000000;
-      pc_change <= 0;
       io_out <= 0;
     end else if (ecall == 32'd1) begin
       case (a7)
@@ -52,17 +51,17 @@ module RegisterFile (
           led_out[0] <= 32'd1;
         end
         32'd11: begin
-          pc_change <= 32'd1;
+          registers[10] <= test_case;
+          led_out[1]<= 32'd1;
         end
         default: begin
-
         end
       endcase
     end else if (reg_write && (rd != 5'd0)) begin
       registers[rd] <= write_data;
     end else begin
       led_out[7] <= 0;
-      pc_change  <= 0;
+      led_out[1] <= 0;
     end
   end
 
