@@ -26,7 +26,7 @@ module Controller  (
 
   // Outputs to Memory
   output reg mem_write,
-  output load_type,
+  output [2:0] load_type,
 
   // Outputs to Writeback
   output reg mem_to_reg,

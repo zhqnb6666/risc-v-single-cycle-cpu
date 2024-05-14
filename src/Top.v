@@ -64,7 +64,7 @@ wire clock;
 
 	// Data Port
 	wire mem_write;
-  wire load_type;
+  wire [2:0] load_type;
 	wire [31:0]d_read_data;
 
 // Writeback wires //

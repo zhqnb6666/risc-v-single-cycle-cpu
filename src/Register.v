@@ -32,9 +32,11 @@ module RegisterFile (
   integer i;
   always @(posedge clk or negedge reset) begin
     if (reset) begin
-      for (i = 0; i < 32; i = i + 1) begin
+      for (i = 4; i < 32; i = i + 1) begin
         registers[i] <= 32'd0;
       end
+      registers[3] <= 32'h1000; //global pointer
+      registers[2] <= 32'h7fff; //stack pointer
       led_out <= 8'b00000000;
       io_out <= 0;
     end else if (ecall == 32'd1) begin

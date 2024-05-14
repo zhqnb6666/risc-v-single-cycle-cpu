@@ -13,7 +13,7 @@ module DMem (
   data_mem udram (
       .clka (clk),
       .wea  (mem_write),
-      .addra(addr[13:0]),
+      .addra(addr[15:2]), 
       .dina (din),
       .douta(douta)
   );
