@@ -59,13 +59,20 @@ module RegisterFile (
         default: begin
         end
       endcase
-    end else if (reg_write && (rd != 5'd0)) begin
+    end else if (reg_write && rd != 5'd0) begin
       registers[rd] <= write_data;
     end else begin
       led_out[7] <= 0;
       led_out[1] <= 0;
+      led_out[0] <= 0;
     end
   end
+
+  // always @(negedge clk) begin
+  //   if (reg_write && rd != 0) begin
+  //     registers[rd] <= write_data;
+  //   end
+  // end
 
 
 endmodule

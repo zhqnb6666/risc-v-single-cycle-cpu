@@ -9,6 +9,7 @@ module Controller  (
   input branch,
 
   // Outputs to Fetch
+  output delay,
   output [15:0] target_PC,
 
   // Outputs to RegisterFile
@@ -67,6 +68,9 @@ assign write_sel = instruction[11:7];
 
 /* Load type */
 assign load_type = instruction[14:12];
+
+/* delay signal */
+assign delay = opcode == LOAD? 1: 0;
 
 
 imm_generator imm_gen(

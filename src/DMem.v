@@ -7,7 +7,7 @@ module DMem (
     input [2:0] load_type
 );
 
-  localparam lb = 3'b000, lh = 3'b001, lw = 3'b010, lbu = 3'b011, lhu = 3'b100;
+  localparam lb = 3'b000, lh = 3'b001, lw = 3'b010, lbu = 3'b100, lhu = 3'b101;
 
   wire [31:0] douta;
   data_mem udram (

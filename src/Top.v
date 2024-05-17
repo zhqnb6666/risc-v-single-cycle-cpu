@@ -18,8 +18,10 @@ module top (
 wire clock;  
 
 // Fetch Wires //
+  wire delay;
 	wire [15:0]target_PC;
 	wire [15:0]PC;
+  wire [15:0] PC_prev;
 
 // Decode Wires
 	
@@ -81,7 +83,7 @@ assign digit_select_output = ~digit_select_wire;
 	
 	assign operand_A = (operation1_sel == 2'b00) ? read_data1:
 							 (operation1_sel == 2'b01) ? PC:
-							 (operation1_sel == 2'b10) ? (PC + 16'd4):
+							 (operation1_sel == 2'b10) ? (PC_prev + 16'd4):
 							 (0);
 							 
 	assign operand_B = (operation2_sel) ? imm32:read_data2;
@@ -105,7 +107,9 @@ IFetch fetch_inst (
   .ecall(ecall),
   .continue_button(confirm_button),
   .target_PC(target_PC),
-  .PC(PC)
+  .PC(PC),
+  .PC_prev(PC_prev),
+  .delay(delay)
 );
 
 
@@ -120,6 +124,7 @@ Controller control_unit (
   .branch(branch),
 
   // Outputs to Fetch
+  .delay(delay),
   .target_PC(target_PC),
 
   // Outputs to Reg File

@@ -13,7 +13,8 @@ module imm_generator(
                U_TYPE = 7'b0110111,
                UP_TYPE = 7'b0010111,
                J_TYPE = 7'b1101111,
-               JR_TYPE = 7'b1100111;
+               JR_TYPE = 7'b1100111,
+               L_TYPE = 7'b0000011;
 
     always @(*) begin
         case (opcode)
@@ -43,7 +44,11 @@ module imm_generator(
             end
             JR_TYPE: begin
                 // Immediate for JR-Type (sign extension)
-                imm32 = {{11{instruction[31]}}, instruction[31], instruction[19:12], instruction[20], instruction[30:21], 1'b0};
+                imm32 = {{20{instruction[31]}}, instruction[31:20]};
+            end
+            L_TYPE: begin
+                // Immediate for L-Type (sign extension)
+                imm32 = {{20{instruction[31]}}, instruction[31:20]};
             end
 
             default: imm32 = 32'b0; // Default case for safety
