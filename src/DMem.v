@@ -7,13 +7,13 @@ module DMem (
     input [2:0] load_type
 );
 
-  localparam lb = 3'b000, lh = 3'b001, lw = 3'b010, lbu = 3'b011, lhu = 3'b100;
+  localparam lb = 3'b000, lh = 3'b001, lw = 3'b010, lbu = 3'b100, lhu = 3'b101;
 
   wire [31:0] douta;
   data_mem udram (
       .clka (clk),
       .wea  (mem_write),
-      .addra(addr[13:0]),
+      .addra(addr[15:2]), 
       .dina (din),
       .douta(douta)
   );
@@ -24,7 +24,6 @@ module DMem (
       lw:  dout = douta;
       lbu: dout = {24'b0, douta[7:0]};
       lhu: dout = {16'b0, douta[15:0]};
-      default: dout = 32'h0;
     endcase
   end
 endmodule

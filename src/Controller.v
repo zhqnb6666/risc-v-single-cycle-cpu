@@ -9,6 +9,7 @@ module Controller  (
   input branch,
 
   // Outputs to Fetch
+  output delay,
   output [15:0] target_PC,
 
   // Outputs to RegisterFile
@@ -26,7 +27,7 @@ module Controller  (
 
   // Outputs to Memory
   output reg mem_write,
-  output load_type,
+  output [2:0] load_type,
 
   // Outputs to Writeback
   output reg mem_to_reg,
@@ -67,6 +68,9 @@ assign write_sel = instruction[11:7];
 
 /* Load type */
 assign load_type = instruction[14:12];
+
+/* delay signal */
+assign delay = opcode == LOAD? 1: 0;
 
 
 imm_generator imm_gen(
@@ -231,15 +235,9 @@ assign target_PC = ((opcode == BRANCH && branch == 1 ) || opcode == JAL)? PC + i
 		  ecall = 1;
 		  ALU_Control = 6'b000000;
 		end
-		default: begin
-			branch_op = 0;
-			mem_write = 0;
-			operation1_sel = 2'b00;
-			operation2_sel = 0;
-			mem_to_reg = 0;
-			reg_write = 0;
-			ALU_Control = 6'b000000; 
-		end
     endcase 
   end	 
+
+
+
 endmodule

@@ -8,7 +8,6 @@ module RegisterFile (
     input      [ 4:0] rd,          // Destination register
     input      [31:0] write_data,  // Data to write
     input             reg_write,   // Control signal to enable writing
-    input      [31:0] test_case,
     input      [ 31:0] test_case,
     output reg [31:0] a0_data,     // Data read from register a0
     output reg        io_out,      //enable io_output
@@ -33,9 +32,11 @@ module RegisterFile (
   integer i;
   always @(posedge clk or negedge reset) begin
     if (reset) begin
-      for (i = 0; i < 32; i = i + 1) begin
+      for (i = 4; i < 32; i = i + 1) begin
         registers[i] <= 32'd0;
       end
+      registers[3] <= 32'h1000; //global pointer
+      registers[2] <= 32'h7fff; //stack pointer
       led_out <= 8'b00000000;
       io_out <= 0;
     end else if (ecall == 32'd1) begin
@@ -58,13 +59,20 @@ module RegisterFile (
         default: begin
         end
       endcase
-    end else if (reg_write && (rd != 5'd0)) begin
+    end else if (reg_write && rd != 5'd0) begin
       registers[rd] <= write_data;
     end else begin
       led_out[7] <= 0;
       led_out[1] <= 0;
+      led_out[0] <= 0;
     end
   end
+
+  // always @(negedge clk) begin
+  //   if (reg_write && rd != 0) begin
+  //     registers[rd] <= write_data;
+  //   end
+  // end
 
 
 endmodule

@@ -1,13 +1,13 @@
 # Clock signal
-set_property PACKAGE_PIN Y18 [get_ports {clk}]
-set_property IOSTANDARD LVCMOS33 [get_ports {clk}]
+set_property PACKAGE_PIN Y18 [get_ports clk]
+set_property IOSTANDARD LVCMOS33 [get_ports clk]
 
 # Reset signal
-set_property PACKAGE_PIN P20 [get_ports {reset}]
-set_property IOSTANDARD LVCMOS33 [get_ports {reset}]
+set_property PACKAGE_PIN P20 [get_ports reset]
+set_property IOSTANDARD LVCMOS33 [get_ports reset]
 # Start Uart communicate signal
-set_property PACKAGE_PIN K13 [get_ports {start_uart}]
-set_property IOSTANDARD LVCMOS33 [get_ports {start_uart}]
+set_property PACKAGE_PIN Y8 [get_ports start_uart]
+set_property IOSTANDARD LVCMOS33 [get_ports start_uart]
 
 # imm input
 set_property IOSTANDARD LVCMOS33 [get_ports {imm_input[0]}]
@@ -138,17 +138,21 @@ set_property PACKAGE_PIN A18 [get_ports {digit_select_output[7]}]
 
 
 #mode input switch and output led
-set_property IOSTANDARD LVCMOS33 [get_ports {test_number[0]}] 
-set_property IOSTANDARD LVCMOS33 [get_ports {test_number[1]}]  
-set_property IOSTANDARD LVCMOS33 [get_ports {test_number[2]}] 
-set_property PACKAGE_PIN Y7 [get_ports { test_number[0]}]
-set_property PACKAGE_PIN W9 [get_ports { test_number[1]}]
-set_property PACKAGE_PIN Y9 [get_ports { test_number[2]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {test_number[0]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {test_number[1]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {test_number[2]}]
+set_property PACKAGE_PIN Y7 [get_ports {test_number[0]}]
+set_property PACKAGE_PIN W9 [get_ports {test_number[1]}]
+set_property PACKAGE_PIN Y9 [get_ports {test_number[2]}]
 
 
-set_property IOSTANDARD LVCMOS15 [get_ports {confirm_button}]
-set_property PACKAGE_PIN P1 [get_ports {confirm_button}]
+set_property IOSTANDARD LVCMOS15 [get_ports confirm_button]
+set_property PACKAGE_PIN P1 [get_ports confirm_button]
 
 #uart pin
 set_property -dict {IOSTANDARD LVCMOS33 PACKAGE_PIN Y19} [get_ports rx]
 set_property -dict {IOSTANDARD LVCMOS33 PACKAGE_PIN V18} [get_ports tx]
+
+
+set_false_path -from [get_clocks -of_objects [get_pins cpu_clk_inst/inst/plle2_adv_inst/CLKOUT1]] -to [get_clocks -of_objects [get_pins cpu_clk_inst/inst/plle2_adv_inst/CLKOUT0]]
+set_false_path -from [get_clocks -of_objects [get_pins cpu_clk_inst/inst/plle2_adv_inst/CLKOUT0]] -to [get_clocks -of_objects [get_pins cpu_clk_inst/inst/plle2_adv_inst/CLKOUT1]]
